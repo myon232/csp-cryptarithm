@@ -1,7 +1,7 @@
 ﻿from Ar import *
 from Domain import*
 print ("This is the beginning of your first python program rae")
-mylist = ["two", "two", "four"]
+mylist = ["three", "three", "two", "two", "eleven"]
 
 #print(extractChars(mylist))
 
@@ -15,26 +15,28 @@ print("this is a message stop fucking up yo")
 #Dtable = addToDomain(var,1,-1)
 #setDomain(Dtable,'o',1)
 
+'''
+setVar('m', 1, dMap)
+setVar('o', 0, dMap)
+setVar('n', 6, dMap)
+setVar('e', 5, dMap)
+setVar('y', 2, dMap)
+'''
 
+'''
+for varKey in dMap:
+    print(dMap[varKey])
+'''
 
-for c in cList:
-    print(str(c) + ' => ', end='')
-    print(cList[c])
-
-print(wordToNum("two",dMap))
-"""
-for letter in var:
-    print(var[letter])
-print("testical")
-"""
-print(isSet(dMap))
 """for name in Dtable:
     print (Dtable[name])
 print("end testing")
 """
-print(cList)
 
-print(setWithMostConst(cList,dMap,mylist))
+
+
+setWithMostConst(cList,dMap,mylist)
+
 
 
 """ now I can now remove numbers from a domain. so lets walk threw this.

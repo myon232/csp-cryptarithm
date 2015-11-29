@@ -56,15 +56,21 @@ def getColumn(columnNum, wordList):
 
 def setDomainTable(letters,wordList):
     domainTable = {}
+    
+    # Adding just vars.
     for name in letters:
         domainTable[name] = Variable(name,1)
-   
+    
+    '''
+    # Adding carry vars.
     for i in range(0,getMaxWordLength(wordList)):
         var = Variable('x'+str(i),2)
         var.domain.clear()
         var.domain = [0,1]
         domainTable['x' + str(i)] = var
         # print(domainTable[name])# domains are set
+    '''
+    
     return domainTable
 
 def removeFromDomain(domainTable,domainID, number):
@@ -94,10 +100,12 @@ def setDomain(domainTable,letter,number):
 
 
 
-def getVarValue(domainTable, variable):
+def getVarValue(domainTable, varName):
+    
     for letter in domainTable:
-        if domainTable[letter] == variable:
+        if domainTable[letter].name == varName:
             return domainTable[letter].value
+            
     return -2#error not found
 
 def computeConst(constTable, domainTable):
@@ -125,51 +133,68 @@ def computeConst(constTable, domainTable):
 
     return sumMap
 
-def getMaxConst(constTable,domainTable):
-    max = 0
-    maxKey = 0
+def getMaxConst(domainTable):
+    minlen = 0
+    
+    maxKey = ''
+    
     for key in domainTable:
-        if max <len(domainTable[key].domain):
-            max = len(domainTable[key].domain)
-            maxKey =key
+        if minlen < len(domainTable[key].domain) and  domainTable[key].value < 0:
+            minlen = len(domainTable[key].domain)
+            maxKey = key
     return maxKey
+    
 
 def isSet(domainTable):
     N = True
     for key in domainTable:
-        if domainTable[key].value == -1:
+        if domainTable[key].value < 0:
             N =  False
             break        
     return N
 
 def wordToNum(word, domainTable):
-    #get varvalue
+    
     stack = ""
     for letter in word:
-        value = getVarValue(domainTable,domainTable[letter])
+        value = getVarValue(domainTable, letter)
 
-        if value < 0:
+        if value < 0 or value > 10:
             return -1
 
         stack += str(value)
+    
+    return int(stack[::-1])
 
-    return int(stack)
 
 
 def setWithMostConst(constTable,domainTable,wordList):
-   
+    
     if isSet(domainTable) == False:
 
-        maxKey = getMaxConst(constTable,domainTable)
-
+        maxKey = getMaxConst(domainTable)
+        
         for value in domainTable[maxKey].domain:
-            setDomain(domainTable,maxKey,value)
-            setWithMostConst(constTable,domainTable,wordList)
-            addToDomain(domainTable, domainTable[maxKey].id, value);
+            
+            setVar(maxKey, value, domainTable);
+            
+            if setWithMostConst(constTable,domainTable,wordList):
+                return True
+                
+            unsetVar(maxKey, domainTable);
 
     else:
+        
+        
         solve = []
         for word in wordList:
             solve.append(wordToNum(word, domainTable))
         if sum(solve[:-1]) == solve[-1]:
             print("I had a orgasm!!! we just came to this point")
+            
+            for varKey in domainTable:
+                print("{} -> {}".format(varKey, domainTable[varKey].value))
+            
+            return True
+    
+    return False
