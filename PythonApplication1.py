@@ -50,7 +50,7 @@ if isOkay:
         if i == len(wordList) -1:
             print("----------  ----------")
     
-        print("{:>10} {:>11}".format(wordList[i], wordToNum(wordList[i], dMap)))
+        print("{:>10} {:>11}".format(wordList[i], wordToNum(tmpList[i], dMap)))
     
     print("\n")
     printTimePass(stop, start)
