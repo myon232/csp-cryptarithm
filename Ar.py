@@ -108,6 +108,62 @@ def getVarValue(domainTable, varName):
             
     return -2#error not found
 
+def getDomain(domainTable,constTable, variable):
+    for key in domainTable:
+        if key == variable:
+            smallerDomain = []
+            for vv in domainTable[key].domain:
+                if testVarValue(domainTable,constTable, variable, vv):
+                    smallerDomain.append(vv)
+                    
+            return smallerDomain
+    return []
+
+def getRight(rightVar, domainTable):
+    varValue = getVarValue(domainTable, rightVar)
+    if varValue < 0:
+        return -1;
+    return varValue
+
+def getLeft(leftList, domainTable):
+
+    valueList = []
+
+    for varName in leftList:
+        varValue = getVarValue(domainTable, varName)
+        if varValue < 0:
+            return -1
+        valueList.append(varValue)
+
+    return sum(valueList);
+
+
+def testVarValue(domainTable,constTable,variable, testValue):
+
+    isValueGood = True
+
+    for cKey in constTable:
+        if cKey == variable or variable in constTable[cKey]:
+            sumRight = getRight(cKey, domainTable)
+            sumLeft = getLeft(constTable[cKey], domainTable)
+            
+            if sumLeft < 0 or sumRight < 0:
+                continue
+            elif sumRight != sumLeft and sumRight +10 !=sumLeft and sumRight != sumLeft +1 and sumRight +10 != sumLeft +1:
+                isValueGood = False
+                break
+
+    return isValueGood
+
+def isCarryVariable(variable):
+    return "x" in variable
+
+def forwardCheck(domainTable,constTable):
+    for var in constTable:
+        if len(constTable[var]) ==  1 and "x" in constTable[var] :
+            domainTable = setVar(var, 1, domainTable)
+    return domainTable
+
 def computeConst(constTable, domainTable):
     sumMap = {}
     for ckey in constTable:
@@ -171,17 +227,17 @@ def wordToNum(word, domainTable):
 def setWithMostConst(constTable,domainTable,wordList):
     
     if isSet(domainTable) == False:
-
+        domainTable = forwardCheck(domainTable,constTable) 
         maxKey = getMaxConst(domainTable)
-        
-        for value in domainTable[maxKey].domain:
+        for value in getDomain(domainTable,constTable, maxKey):
             
-            setVar(maxKey, value, domainTable);
+            setVar(maxKey, value, domainTable)
             
             if setWithMostConst(constTable,domainTable,wordList):
                 return True
-                
-            unsetVar(maxKey, domainTable);
+               
+            unsetVar(maxKey, domainTable)
+            
 
     else:
         
@@ -190,7 +246,7 @@ def setWithMostConst(constTable,domainTable,wordList):
         for word in wordList:
             solve.append(wordToNum(word, domainTable))
         if sum(solve[:-1]) == solve[-1]:
-            print("I had a orgasm!!! we just came to this point")
+            print("Here is your output Prof:")
             
             for varKey in domainTable:
                 print("{} -> {}".format(varKey, domainTable[varKey].value))

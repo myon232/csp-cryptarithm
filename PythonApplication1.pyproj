@@ -28,9 +28,7 @@
     <Compile Include="Domain.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\CSPRepo\PythonApplication1.py">
-      <Link>PythonApplication1.py</Link>
-    </Compile>
+    <Compile Include="PythonApplication1.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
